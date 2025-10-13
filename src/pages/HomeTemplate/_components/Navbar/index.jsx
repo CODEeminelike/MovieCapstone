@@ -71,7 +71,7 @@ export default function Navbar() {
                   onClick={handleLogout}
                   className="block py-2 px-3 text-white rounded md:p-0 transition-colors duration-200 hover:text-cyan-300 cursor-pointer"
                 >
-                  Đăng xuất ({userData.taiKhoan || userData.hoTen})
+                  ĐĂNG XUẤT ({userData.taiKhoan || userData.hoTen})
                 </button>
               ) : (
                 // CHƯA ĐĂNG NHẬP - HIỆN NÚT ĐĂNG NHẬP
@@ -85,7 +85,7 @@ export default function Navbar() {
                   }
                   to="/login"
                 >
-                  Đăng nhập
+                  ĐĂNG NHẬP
                 </NavLink>
               )}
             </li>

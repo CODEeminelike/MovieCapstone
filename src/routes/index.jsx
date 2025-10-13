@@ -9,6 +9,7 @@ import AddUserPage from "../pages/AdminTemplate/AddUserPage";
 import AuthPage from "../pages/AdminTemplate/AuthPage";
 import { Route } from "react-router-dom";
 import Login from "../pages/HomeTemplate/LoginPage";
+import Register from "../pages/HomeTemplate/RegisterPage";
 
 export const routes = [
   {
@@ -25,8 +26,15 @@ export const routes = [
         name: "ĐĂNG NHẬP",
         hiddenNav: true,
       },
+      {
+        path: "register",
+        element: Register,
+        name: "ĐĂNG KÍ",
+        hiddenNav: true,
+      },
     ],
   },
+
   {
     path: "admin",
     element: AdminTemplate,
