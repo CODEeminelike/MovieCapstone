@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { guestApi } from "@/services/apiService";
+import { userApi } from "../../../services/apiService";
 
 const initialState = {
   loading: false,
@@ -12,7 +13,7 @@ export const fetchRoomData = createAsyncThunk(
   "seats/fetchBySchedule",
   async (maLichChieu, { rejectWithValue }) => {
     try {
-      const response = await guestApi.get(
+      const response = await userApi.get(
         `QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=${maLichChieu}`
       );
       return response.data.content;
@@ -29,7 +30,7 @@ export const bookTickets = createAsyncThunk(
   "seats/bookTickets",
   async (bookingData, { rejectWithValue }) => {
     try {
-      const response = await guestApi.post(
+      const response = await userApi.post(
         "QuanLyDatVe/DatVe",
         bookingData
       );
