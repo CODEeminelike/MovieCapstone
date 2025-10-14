@@ -1,5 +1,5 @@
+// src/pages/AdminTemplate/UserManage/slice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { storage } from "../../../helpers/localStorageHelper";
 import { adminApi } from "../../../services/apiService";
 
 const initialState = {
@@ -16,7 +16,6 @@ export const addUserService = createAsyncThunk(
         `QuanLyNguoiDung/ThemNguoiDung`,
         user
       );
-
       return response.data.content;
     } catch (error) {
       return rejectWithValue({
@@ -26,10 +25,18 @@ export const addUserService = createAsyncThunk(
     }
   }
 );
+
 const addUserReducer = createSlice({
   name: "addUserReducer",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearData: (state) => {
+      state.data = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(addUserService.pending, (state) => {
       state.loading = true;
@@ -46,4 +53,5 @@ const addUserReducer = createSlice({
   },
 });
 
+export const { clearError, clearData } = addUserReducer.actions;
 export default addUserReducer.reducer;

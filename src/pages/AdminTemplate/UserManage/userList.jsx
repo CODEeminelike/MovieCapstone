@@ -1,6 +1,7 @@
 // src/pages/AdminTemplate/UserManage/UserList.jsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   fetchUsers,
   deleteUser,
@@ -10,6 +11,7 @@ import {
 
 export default function UserList() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     data: users,
     loading,
@@ -26,6 +28,12 @@ export default function UserList() {
     dispatch(clearError());
   }, [dispatch]);
 
+  // Xử lý điều hướng đến trang thêm user
+  const handleAddUser = () => {
+    console.log("đây");
+    navigate("/admin/add-user"); // Điều hướng đến route add-user
+  };
+
   // Xử lý xóa user
   const handleDelete = (taiKhoan) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa user này?")) {
@@ -33,9 +41,16 @@ export default function UserList() {
     }
   };
 
-  // Xử lý mở modal sửa user
+  // Xử lý mở modal sửa user - FIX LỖI UNCONTROLLED INPUT
   const handleEdit = (user) => {
-    setEditingUser({ ...user });
+    // Khởi tạo với tất cả giá trị mặc định
+    setEditingUser({
+      taiKhoan: user.taiKhoan || "",
+      hoTen: user.hoTen || "",
+      email: user.email || "",
+      soDt: user.soDt || "",
+      maLoaiNguoiDung: user.maLoaiNguoiDung || "KhachHang",
+    });
     setShowEditModal(true);
   };
 
@@ -54,6 +69,7 @@ export default function UserList() {
       [name]: value,
     }));
   };
+
   // Xử lý cập nhật user
   const handleUpdateUser = async (e) => {
     e.preventDefault();
@@ -67,13 +83,18 @@ export default function UserList() {
       return;
     }
 
-    // Chuẩn bị data với đầy đủ các trường cần thiết
+    // Tìm user gốc để lấy mật khẩu
+    const originalUser = users.find(
+      (user) => user.taiKhoan === editingUser.taiKhoan
+    );
+
+    // Chuẩn bị data với đầy đủ các trường
     const userData = {
       taiKhoan: editingUser.taiKhoan,
-      matKhau: editingUser.matKhau, // Cần giữ nguyên mật khẩu
+      matKhau: originalUser?.matKhau || "123456", // Fallback nếu không tìm thấy
       email: editingUser.email,
       soDt: editingUser.soDt,
-      maNhom: "GP01", // Thêm maNhom
+      maNhom: "GP01",
       maLoaiNguoiDung: editingUser.maLoaiNguoiDung,
       hoTen: editingUser.hoTen,
     };
@@ -86,7 +107,6 @@ export default function UserList() {
       handleCloseModal();
     } catch (error) {
       console.error("Lỗi khi cập nhật user:", error);
-      // Hiển thị thông báo lỗi chi tiết
       const errorMessage =
         error.message?.content ||
         error.message?.message ||
@@ -115,13 +135,35 @@ export default function UserList() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Quản Lý Người Dùng
-        </h1>
-        <p className="text-gray-600">
-          Danh sách tất cả user trong nhóm GP01
-        </p>
+      {/* Header với nút Thêm người dùng */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Quản Lý Người Dùng
+          </h1>
+          <p className="text-gray-600">
+            Danh sách tất cả user trong nhóm GP01
+          </p>
+        </div>
+        <button
+          onClick={handleAddUser}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span>Thêm người dùng</span>
+        </button>
       </div>
 
       {/* Search Box */}
@@ -273,7 +315,7 @@ export default function UserList() {
                 </label>
                 <input
                   type="text"
-                  value={editingUser.taiKhoan}
+                  value={editingUser.taiKhoan || ""}
                   disabled
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
                 />
@@ -289,7 +331,7 @@ export default function UserList() {
                 <input
                   type="text"
                   name="hoTen"
-                  value={editingUser.hoTen}
+                  value={editingUser.hoTen || ""}
                   onChange={handleEditChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -303,7 +345,7 @@ export default function UserList() {
                 <input
                   type="email"
                   name="email"
-                  value={editingUser.email}
+                  value={editingUser.email || ""}
                   onChange={handleEditChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -317,7 +359,7 @@ export default function UserList() {
                 <input
                   type="text"
                   name="soDt"
-                  value={editingUser.soDt}
+                  value={editingUser.soDt || ""}
                   onChange={handleEditChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -330,7 +372,7 @@ export default function UserList() {
                 </label>
                 <select
                   name="maLoaiNguoiDung"
-                  value={editingUser.maLoaiNguoiDung}
+                  value={editingUser.maLoaiNguoiDung || "KhachHang"}
                   onChange={handleEditChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >

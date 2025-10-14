@@ -56,14 +56,12 @@ export const routes = [
         path: "manage-user",
         element: UserList,
         name: "QUẢN LÍ NGƯỜI DÙNG",
-        nested: [
-          {
-            path: "add-user",
-            element: AddUserPage,
-            name: "THÊM NGƯỜI DÙNG",
-            hiddenNav: true,
-          },
-        ],
+      },
+      {
+        path: "add-user",
+        element: AddUserPage,
+        name: "THÊM NGƯỜI DÙNG",
+        hiddenNav: true,
       },
       {
         path: "manage-movie",
