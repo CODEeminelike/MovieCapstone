@@ -1,8 +1,146 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { authUserRegister } from "./slice";
+import { useDispatch, useSelector } from "react-redux";
+import AlertError from "../../../components/alertError";
+import { storage } from "../../../helpers/localStorageHelper";
 
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    user: {
+      taiKhoan: "",
+      matKhau: "",
+      email: "",
+      soDt: "",
+      maNhom: "GP01",
+      hoTen: "",
+    },
+    error: {
+      taiKhoan: "",
+      matKhau: "",
+      email: "",
+      confirmPassword: "",
+    },
+  });
+
+  const error = useSelector(
+    (state) => state.authUserRegisterReducer?.error
+  );
+  // const data = useSelector(
+  //   (state) => state.authUserRegisterReducer?.data
+  // );
+
+  const data = storage.get("USER_INFO");
+  // Sử dụng useEffect để xử lý redirect khi login thành công
+  useEffect(() => {
+    if (data) {
+      console.log("REGISTER SUCCESS");
+      console.log(data);
+
+      window.history.back(); // Quay lại trang trước đó
+    }
+  }, [data]);
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        [name]: value,
+      },
+    }));
+  };
+
+  const disPatch = useDispatch();
+  const onSubmit = (e) => {
+    if (
+      userInfo.error.taiKhoan === "" &&
+      userInfo.error.matKhau == "" &&
+      userInfo.error.email == ""
+    ) {
+      e.preventDefault();
+      console.log(userInfo);
+      disPatch(authUserRegister(userInfo.user));
+    }
+  };
+  const onBlur = (e) => {
+    const { name, value } = e.target;
+    const newName = (name) => {
+      switch (name) {
+        case "taiKhoan": {
+          return "Tài khoản";
+        }
+        case "matKhau": {
+          return "Mật khẩu";
+        }
+        case "email": {
+          return "Email";
+        }
+        default:
+          return "Xác nhận mật khẩu";
+      }
+    };
+
+    let message =
+      value === "" ? `Không được để trống ${newName(name)}!` : "";
+
+    switch (name) {
+      case "taiKhoan": {
+        if (value && !value.match(/^[a-zA-Z0-9_]{3,20}$/)) {
+          message =
+            "Vui lòng nhập tài khoản hợp lệ (3-20 ký tự, chỉ chữ cái, số và dấu gạch dưới)!";
+        }
+        break;
+      }
+      case "matKhau": {
+        if (
+          value &&
+          !value.match(
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{0,}$/
+          )
+        ) {
+          message =
+            "Mật khẩu không đủ phức tạp. \nVui lòng đảm bảo mật khẩu chứa ít nhất một chữ cái thường. \nMột chữ cái hoa \nMột chữ số và một ký tự đặc biệt.";
+        }
+        break;
+      }
+      case "email": {
+        if (
+          value &&
+          !value.match(
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+          )
+        ) {
+          message =
+            "Email không hợp lệ. \nVui lòng nhập địa chỉ email đúng định dạng.";
+        }
+        break;
+      }
+      default: {
+        if (value != userInfo.user.matKhau) {
+          message = "Xác nhận mật khẩu không đúng";
+        }
+        break;
+      }
+    }
+
+    setUserInfo((prev) => ({
+      ...prev,
+      error: {
+        ...prev.error,
+        [name]: message,
+      },
+    }));
+  };
   return (
     <div className="bg-slate-50 flex items-center md:h-screen p-4">
+      {error && (
+        <div className="fixed top-16 right-1 z-50 max-w-sm w-full">
+          <AlertError messageError={error.message} />
+        </div>
+      )}
+
       <div className="w-full max-w-3xl max-md:max-w-xl mx-auto">
         <div className="relative">
           {/* Background Decorations - Giống component Login */}
@@ -102,7 +240,7 @@ export default function Register() {
                 </button>
               </div>
             </div>
-            <form className="w-full">
+            <form className="w-full" onSubmit={onSubmit}>
               <div className="mb-8">
                 <h2 className="text-slate-900 text-2xl font-medium">
                   Đăng ký tài khoản
@@ -121,6 +259,8 @@ export default function Register() {
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập tài khoản"
+                      onChange={handleOnChange}
+                      onBlur={onBlur}
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -141,6 +281,22 @@ export default function Register() {
                       />
                     </svg>
                   </div>
+                  {userInfo.error.taiKhoan && (
+                    <div
+                      class="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
+                      role="alert"
+                      tabindex="-1"
+                      aria-labelledby="hs-soft-color-danger-label"
+                    >
+                      <span
+                        id="hs-soft-color-danger-label"
+                        class="font-bold"
+                      >
+                        Cảnh báo
+                      </span>{" "}
+                      {userInfo.error.taiKhoan}
+                    </div>
+                  )}
                 </div>
 
                 {/* Mật khẩu - Bắt buộc */}
@@ -151,24 +307,64 @@ export default function Register() {
                   <div className="relative flex items-center">
                     <input
                       name="matKhau"
-                      type="password"
+                      type={showPassword ? "text" : "password"} // Thay đổi type
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập mật khẩu"
+                      onChange={handleOnChange}
+                      onBlur={onBlur}
                     />
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="#bbb"
-                      stroke="#bbb"
-                      className="w-4 h-4 absolute right-4 cursor-pointer"
-                      viewBox="0 0 128 128"
+                    {/* Nút toggle password */}
+                    <button
+                      type="button"
+                      className="absolute right-4 cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
                     >
-                      <path
-                        d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z"
-                        data-original="#000000"
-                      />
-                    </svg>
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
+                        </svg>
+                      )}
+                    </button>
                   </div>
+                  {userInfo.error.matKhau && (
+                    <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4">
+                      <span className="font-bold">Cảnh báo</span>{" "}
+                      {userInfo.error.matKhau}
+                    </div>
+                  )}
                 </div>
 
                 {/* Xác nhận mật khẩu - Bắt buộc */}
@@ -180,24 +376,75 @@ export default function Register() {
                   <div className="relative flex items-center">
                     <input
                       name="confirmPassword"
-                      type="password"
+                      type={showPassword ? "text" : "password"} // Thay đổi type cfp
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập lại mật khẩu"
+                      onChange={handleOnChange}
+                      onBlur={onBlur}
                     />
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="#bbb"
-                      stroke="#bbb"
-                      className="w-4 h-4 absolute right-4 cursor-pointer"
-                      viewBox="0 0 128 128"
+                    {/* Nút toggle password */}
+                    <button
+                      type="button"
+                      className="absolute right-4 cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
                     >
-                      <path
-                        d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z"
-                        data-original="#000000"
-                      />
-                    </svg>
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
+                        </svg>
+                      )}
+                    </button>
                   </div>
+
+                  {userInfo.error.confirmPassword && (
+                    <div
+                      class="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
+                      role="alert"
+                      tabindex="-1"
+                      aria-labelledby="hs-soft-color-danger-label"
+                    >
+                      <span
+                        id="hs-soft-color-danger-label"
+                        class="font-bold"
+                      >
+                        Cảnh báo
+                      </span>{" "}
+                      {userInfo.error.confirmPassword}
+                    </div>
+                  )}
                 </div>
 
                 {/* Email - Bắt buộc */}
@@ -212,6 +459,8 @@ export default function Register() {
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập email"
+                      onChange={handleOnChange}
+                      onBlur={onBlur}
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -249,6 +498,22 @@ export default function Register() {
                       </g>
                     </svg>
                   </div>
+                  {userInfo.error.email && (
+                    <div
+                      class="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
+                      role="alert"
+                      tabindex="-1"
+                      aria-labelledby="hs-soft-color-danger-label"
+                    >
+                      <span
+                        id="hs-soft-color-danger-label"
+                        class="font-bold"
+                      >
+                        Cảnh báo
+                      </span>{" "}
+                      {userInfo.error.email}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center">
@@ -276,6 +541,7 @@ export default function Register() {
                 <button
                   type="button"
                   className="w-full py-3 px-4 text-sm font-medium tracking-wider cursor-pointer rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl hover:shadow-inner focus:outline-none transition duration-500 ease-in-out transform hover:-translate-y-0.5 hover:scale-105"
+                  onClick={onSubmit}
                 >
                   Tạo tài khoản
                 </button>

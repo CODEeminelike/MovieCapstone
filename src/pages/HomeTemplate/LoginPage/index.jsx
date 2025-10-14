@@ -12,9 +12,6 @@ export default function Login() {
 
   const error = useSelector((state) => state.authUserReducer?.error);
   const data = useSelector((state) => state.authUserReducer?.data);
-  const loading = useSelector(
-    (state) => state.authUserReducer?.loading
-  );
 
   // Sử dụng useEffect để xử lý redirect khi login thành công
   useEffect(() => {
