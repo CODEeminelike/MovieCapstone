@@ -49,7 +49,7 @@ export default function DeleteMovie() {
       ).unwrap();
       console.log("Xóa phim thành công:", result);
       alert("Xóa phim thành công!");
-      navigate("/admin/movie-management");
+      navigate("/admin/manage-movie");
     } catch (error) {
       console.error("Lỗi khi xóa phim:", error);
       alert(
@@ -62,7 +62,7 @@ export default function DeleteMovie() {
 
   // Xử lý hủy
   const handleCancel = () => {
-    navigate("/admin/movie-management");
+    navigate("/admin/manage-movie");
   };
 
   if (loading && !movieToDelete) {

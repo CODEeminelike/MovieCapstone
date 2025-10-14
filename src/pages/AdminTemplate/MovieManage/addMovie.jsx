@@ -107,7 +107,7 @@ export default function AddMovie() {
     try {
       const result = await dispatch(addMovie(movieData)).unwrap();
       alert("Thêm phim thành công!");
-      navigate("/admin/movie-management");
+      navigate("/admin/manage-movie");
     } catch (error) {
       console.error("Chi tiết lỗi:", error);
 
@@ -129,7 +129,7 @@ export default function AddMovie() {
 
   // Xử lý hủy
   const handleCancel = () => {
-    navigate("/admin/movie-management");
+    navigate("/admin/manage-movie");
   };
 
   return (

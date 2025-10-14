@@ -153,7 +153,7 @@ export default function EditMovie() {
       const result = await dispatch(updateMovie(movieData)).unwrap();
       console.log("Cập nhật phim thành công:", result);
       alert("Cập nhật phim thành công!");
-      navigate("/admin/movie-management");
+      navigate("/admin/manage-movie");
     } catch (error) {
       console.error("Lỗi khi cập nhật phim:", error);
       alert(
@@ -166,7 +166,7 @@ export default function EditMovie() {
 
   // Xử lý hủy
   const handleCancel = () => {
-    navigate("/admin/movie-management");
+    navigate("/admin/manage-movie");
   };
 
   if (loading && !formData.maPhim) {

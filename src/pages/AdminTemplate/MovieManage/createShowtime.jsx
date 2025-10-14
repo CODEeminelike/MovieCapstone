@@ -192,7 +192,7 @@ export default function CreateShowtime() {
         createShowtime(showtimeData)
       ).unwrap();
       alert("Tạo lịch chiếu thành công!");
-      navigate("/admin/movie-management");
+      navigate("/admin/manage-movie");
     } catch (error) {
       console.error("Lỗi khi tạo lịch chiếu:", error);
       const errorMessage =
@@ -205,7 +205,7 @@ export default function CreateShowtime() {
 
   // Xử lý hủy
   const handleCancel = () => {
-    navigate("/admin/movie-management");
+    navigate("/admin/manage-movie");
   };
 
   return (

@@ -13,7 +13,7 @@ import Register from "../pages/HomeTemplate/RegisterPage";
 import SeatSelection from "../pages/HomeTemplate/Booking/seatSelection";
 import ShowMovies from "../pages/AdminTemplate/MovieManage/showMovies";
 import EditMovie from "../pages/AdminTemplate/MovieManage/editMovie";
-import AddMovie from "../pages/AdminTemplate/MovieManage/AddMovie";
+import AddMovie from "../pages/AdminTemplate/MovieManage/addMovie";
 import DeleteMovie from "../pages/AdminTemplate/MovieManage/deleteMovie";
 import CreateShowtime from "../pages/AdminTemplate/MovieManage/createShowtime";
 import UserList from "../pages/AdminTemplate/UserManage/userList";
