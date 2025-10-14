@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import listMovieReducer from "@/pages/HomeTemplate/ListMoviePage/slice";
-import detailReducer from "@/pages/HomeTemplate/Detailpage/slice";
+import detailReducer from "@/pages/HomeTemplate/DetailPage/slice";
 import authReducer from "@/pages/AdminTemplate/AuthPage/slice";
 import addUserReducer from "@/pages/AdminTemplate/UserManage/slice";
 import authUserReducer from "@/pages/HomeTemplate/LoginPage/slice";
