@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom"; // Thêm import này
 import { fetchMovieTheaters } from "./theaterSlice";
 
 const TheaterList = ({ movieId }) => {
@@ -221,9 +222,11 @@ const TheaterList = ({ movieId }) => {
             {filteredSchedules.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredSchedules.map((schedule) => (
-                  <button
+                  // Trong phần danh sách suất chiếu, sửa NavLink thành:
+                  <NavLink
                     key={schedule.maLichChieu}
-                    className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-center"
+                    to={`/booking/${schedule.maLichChieu}`} // Đường dẫn tương đối
+                    className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-center block"
                   >
                     <div className="text-lg font-bold text-gray-900">
                       {formatTime(schedule.ngayChieuGioChieu)}
@@ -237,7 +240,7 @@ const TheaterList = ({ movieId }) => {
                     <div className="text-xs text-gray-500 mt-1">
                       {schedule.tenRap} • {schedule.thoiLuong} phút
                     </div>
-                  </button>
+                  </NavLink>
                 ))}
               </div>
             ) : (

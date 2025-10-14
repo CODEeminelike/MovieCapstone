@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { fetchDetailMovie } from "./slice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import TheaterList from "./TheaterList";
 
 export default function DetailPage() {
   const state = useSelector((state) => state.detailReducer);
@@ -178,7 +179,7 @@ export default function DetailPage() {
         </div>
 
         {/* Lịch chiếu rạp */}
-        {/* <TheaterList movieId={movie.maPhim} /> */}
+        <TheaterList movieId={movie.maPhim} />
       </div>
     </div>
   );

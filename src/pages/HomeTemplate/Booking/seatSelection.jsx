@@ -1,10 +1,15 @@
 // components/SeatSelection.js
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Navigate, useParams } from "react-router-dom";
 
 const SeatSelection = () => {
   const { maLichChieu } = useParams(); // Lấy maLichChieu từ URL
 
+  const isLogin = useSelector((state) => state.authUserReducer.data);
+  //   if (!isLogin) {
+  //     return <Navigate to="/login" />;
+  //   }
   // Fetch thông tin lịch chiếu dựa trên maLichChieu
   useEffect(() => {
     if (maLichChieu) {
