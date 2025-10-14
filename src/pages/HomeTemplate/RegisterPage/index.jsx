@@ -1,149 +1,143 @@
 import React, { useEffect, useState } from "react";
-import { authUserRegister } from "./slice";
 import { useDispatch, useSelector } from "react-redux";
+import { authUserRegister } from "./slice";
 import AlertError from "../../../components/alertError";
 import { storage } from "../../../helpers/localStorageHelper";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    user: {
-      taiKhoan: "",
-      matKhau: "",
-      email: "",
-      soDt: "",
-      maNhom: "GP01",
-      hoTen: "",
-    },
-    error: {
-      taiKhoan: "",
-      matKhau: "",
-      email: "",
-      confirmPassword: "",
-    },
+  const [user, setUser] = useState({
+    taiKhoan: "",
+    matKhau: "",
+    email: "",
+    soDt: "",
+    maNhom: "GP01",
+    hoTen: "",
+  });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState({
+    taiKhoan: "",
+    matKhau: "",
+    email: "",
+    confirmPassword: "",
   });
 
-  const error = useSelector(
+  const reduxError = useSelector(
     (state) => state.authUserRegisterReducer?.error
   );
-  // const data = useSelector(
-  //   (state) => state.authUserRegisterReducer?.data
-  // );
-
   const data = storage.get("USER_INFO");
-  // Sử dụng useEffect để xử lý redirect khi login thành công
+
   useEffect(() => {
     if (data) {
       console.log("REGISTER SUCCESS");
       console.log(data);
-
-      window.history.back(); // Quay lại trang trước đó
+      window.history.back();
     }
   }, [data]);
 
-  const handleOnChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserInfo((prev) => ({
-      ...prev,
-      user: {
-        ...prev.user,
-        [name]: value,
-      },
-    }));
-  };
-
-  const disPatch = useDispatch();
-  const onSubmit = (e) => {
-    if (
-      userInfo.error.taiKhoan === "" &&
-      userInfo.error.matKhau == "" &&
-      userInfo.error.email == ""
-    ) {
-      e.preventDefault();
-      console.log(userInfo);
-      disPatch(authUserRegister(userInfo.user));
+    if (name === "confirmPassword") {
+      setConfirmPassword(value);
+    } else {
+      setUser((prev) => ({ ...prev, [name]: value }));
     }
   };
-  const onBlur = (e) => {
-    const { name, value } = e.target;
-    const newName = (name) => {
+
+  const dispatch = useDispatch();
+
+  const validateField = (name, value) => {
+    let message = "";
+    const fieldName =
+      {
+        taiKhoan: "Tài khoản",
+        matKhau: "Mật khẩu",
+        email: "Email",
+        confirmPassword: "Xác nhận mật khẩu",
+      }[name] || "";
+
+    if (!value && name !== "confirmPassword") {
+      message = `Không được để trống ${fieldName}!`;
+    } else {
       switch (name) {
-        case "taiKhoan": {
-          return "Tài khoản";
-        }
-        case "matKhau": {
-          return "Mật khẩu";
-        }
-        case "email": {
-          return "Email";
-        }
+        case "taiKhoan":
+          if (!value.match(/^[a-zA-Z0-9_]{3,20}$/)) {
+            message =
+              "Vui lòng nhập tài khoản hợp lệ (3-20 ký tự, chỉ chữ cái, số và dấu gạch dưới).";
+          }
+          break;
+        case "matKhau":
+          if (
+            !value.match(
+              /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/
+            )
+          ) {
+            message =
+              "Mật khẩu không đủ phức tạp. Vui lòng đảm bảo mật khẩu chứa ít nhất một chữ cái thường, một chữ cái hoa, một chữ số, một ký tự đặc biệt và tối thiểu 8 ký tự.";
+          }
+          break;
+        case "email":
+          if (
+            !value.match(
+              /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+            )
+          ) {
+            message =
+              "Email không hợp lệ. Vui lòng nhập địa chỉ email đúng định dạng.";
+          }
+          break;
+        case "confirmPassword":
+          if (value !== user.matKhau) {
+            message = "Xác nhận mật khẩu không khớp.";
+          }
+          break;
         default:
-          return "Xác nhận mật khẩu";
-      }
-    };
-
-    let message =
-      value === "" ? `Không được để trống ${newName(name)}!` : "";
-
-    switch (name) {
-      case "taiKhoan": {
-        if (value && !value.match(/^[a-zA-Z0-9_]{3,20}$/)) {
-          message =
-            "Vui lòng nhập tài khoản hợp lệ (3-20 ký tự, chỉ chữ cái, số và dấu gạch dưới)!";
-        }
-        break;
-      }
-      case "matKhau": {
-        if (
-          value &&
-          !value.match(
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{0,}$/
-          )
-        ) {
-          message =
-            "Mật khẩu không đủ phức tạp. \nVui lòng đảm bảo mật khẩu chứa ít nhất một chữ cái thường. \nMột chữ cái hoa \nMột chữ số và một ký tự đặc biệt.";
-        }
-        break;
-      }
-      case "email": {
-        if (
-          value &&
-          !value.match(
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-          )
-        ) {
-          message =
-            "Email không hợp lệ. \nVui lòng nhập địa chỉ email đúng định dạng.";
-        }
-        break;
-      }
-      default: {
-        if (value != userInfo.user.matKhau) {
-          message = "Xác nhận mật khẩu không đúng";
-        }
-        break;
+          break;
       }
     }
-
-    setUserInfo((prev) => ({
-      ...prev,
-      error: {
-        ...prev.error,
-        [name]: message,
-      },
-    }));
+    return message;
   };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const val =
+      name === "confirmPassword" ? confirmPassword : user[name];
+    const message = validateField(name, val);
+    setErrors((prev) => ({ ...prev, [name]: message }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validate all fields again
+    const newErrors = {};
+    Object.keys(user).forEach((key) => {
+      if (["taiKhoan", "matKhau", "email"].includes(key)) {
+        newErrors[key] = validateField(key, user[key]);
+      }
+    });
+    newErrors.confirmPassword = validateField(
+      "confirmPassword",
+      confirmPassword
+    );
+    setErrors(newErrors);
+
+    // Check if any errors
+    if (Object.values(newErrors).every((err) => err === "")) {
+      dispatch(authUserRegister(user));
+    }
+  };
+
   return (
     <div className="bg-slate-50 flex items-center md:h-screen p-4">
-      {error && (
+      {reduxError && (
         <div className="fixed top-16 right-1 z-50 max-w-sm w-full">
-          <AlertError messageError={error.message} />
+          <AlertError messageError={reduxError.message} />
         </div>
       )}
 
       <div className="w-full max-w-3xl max-md:max-w-xl mx-auto">
         <div className="relative">
-          {/* Background Decorations - Giống component Login */}
+          {/* Background Decorations */}
           <div className="absolute inset-0 -z-10">
             <div className="absolute w-full h-full bg-blue-400 rounded-3xl transform -rotate-6 opacity-60" />
             <div className="absolute w-full h-full bg-red-400 rounded-3xl transform rotate-6 opacity-60" />
@@ -240,14 +234,14 @@ export default function Register() {
                 </button>
               </div>
             </div>
-            <form className="w-full" onSubmit={onSubmit}>
+            <form className="w-full" onSubmit={handleSubmit}>
               <div className="mb-8">
                 <h2 className="text-slate-900 text-2xl font-medium">
                   Đăng ký tài khoản
                 </h2>
               </div>
               <div className="space-y-6">
-                {/* Tài khoản - Bắt buộc */}
+                {/* Tài khoản */}
                 <div>
                   <label className="text-slate-900 text-sm font-medium mb-2 block">
                     Tài khoản <span className="text-red-500">*</span>
@@ -259,8 +253,9 @@ export default function Register() {
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập tài khoản"
-                      onChange={handleOnChange}
-                      onBlur={onBlur}
+                      value={user.taiKhoan}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -281,25 +276,15 @@ export default function Register() {
                       />
                     </svg>
                   </div>
-                  {userInfo.error.taiKhoan && (
-                    <div
-                      class="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
-                      role="alert"
-                      tabindex="-1"
-                      aria-labelledby="hs-soft-color-danger-label"
-                    >
-                      <span
-                        id="hs-soft-color-danger-label"
-                        class="font-bold"
-                      >
-                        Cảnh báo
-                      </span>{" "}
-                      {userInfo.error.taiKhoan}
+                  {errors.taiKhoan && (
+                    <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4">
+                      <span className="font-bold">Cảnh báo</span>{" "}
+                      {errors.taiKhoan}
                     </div>
                   )}
                 </div>
 
-                {/* Mật khẩu - Bắt buộc */}
+                {/* Mật khẩu */}
                 <div>
                   <label className="text-slate-900 text-sm font-medium mb-2 block">
                     Mật khẩu <span className="text-red-500">*</span>
@@ -307,14 +292,14 @@ export default function Register() {
                   <div className="relative flex items-center">
                     <input
                       name="matKhau"
-                      type={showPassword ? "text" : "password"} // Thay đổi type
+                      type={showPassword ? "text" : "password"}
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập mật khẩu"
-                      onChange={handleOnChange}
-                      onBlur={onBlur}
+                      value={user.matKhau}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
-                    {/* Nút toggle password */}
                     <button
                       type="button"
                       className="absolute right-4 cursor-pointer"
@@ -359,15 +344,15 @@ export default function Register() {
                       )}
                     </button>
                   </div>
-                  {userInfo.error.matKhau && (
+                  {errors.matKhau && (
                     <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4">
                       <span className="font-bold">Cảnh báo</span>{" "}
-                      {userInfo.error.matKhau}
+                      {errors.matKhau}
                     </div>
                   )}
                 </div>
 
-                {/* Xác nhận mật khẩu - Bắt buộc */}
+                {/* Xác nhận mật khẩu */}
                 <div>
                   <label className="text-slate-900 text-sm font-medium mb-2 block">
                     Xác nhận mật khẩu{" "}
@@ -376,14 +361,14 @@ export default function Register() {
                   <div className="relative flex items-center">
                     <input
                       name="confirmPassword"
-                      type={showPassword ? "text" : "password"} // Thay đổi type cfp
+                      type={showPassword ? "text" : "password"}
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập lại mật khẩu"
-                      onChange={handleOnChange}
-                      onBlur={onBlur}
+                      value={confirmPassword}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
-                    {/* Nút toggle password */}
                     <button
                       type="button"
                       className="absolute right-4 cursor-pointer"
@@ -428,26 +413,15 @@ export default function Register() {
                       )}
                     </button>
                   </div>
-
-                  {userInfo.error.confirmPassword && (
-                    <div
-                      class="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
-                      role="alert"
-                      tabindex="-1"
-                      aria-labelledby="hs-soft-color-danger-label"
-                    >
-                      <span
-                        id="hs-soft-color-danger-label"
-                        class="font-bold"
-                      >
-                        Cảnh báo
-                      </span>{" "}
-                      {userInfo.error.confirmPassword}
+                  {errors.confirmPassword && (
+                    <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4">
+                      <span className="font-bold">Cảnh báo</span>{" "}
+                      {errors.confirmPassword}
                     </div>
                   )}
                 </div>
 
-                {/* Email - Bắt buộc */}
+                {/* Email */}
                 <div>
                   <label className="text-slate-900 text-sm font-medium mb-2 block">
                     Email <span className="text-red-500">*</span>
@@ -459,8 +433,9 @@ export default function Register() {
                       required
                       className="bg-white border border-slate-300 w-full text-sm text-slate-900 pl-4 pr-10 py-2.5 rounded-xl shadow-lg hover:bg-blue-100 focus:bg-blue-100 focus:ring-0 outline-none transition duration-300"
                       placeholder="Nhập email"
-                      onChange={handleOnChange}
-                      onBlur={onBlur}
+                      value={user.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -498,20 +473,10 @@ export default function Register() {
                       </g>
                     </svg>
                   </div>
-                  {userInfo.error.email && (
-                    <div
-                      class="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
-                      role="alert"
-                      tabindex="-1"
-                      aria-labelledby="hs-soft-color-danger-label"
-                    >
-                      <span
-                        id="hs-soft-color-danger-label"
-                        class="font-bold"
-                      >
-                        Cảnh báo
-                      </span>{" "}
-                      {userInfo.error.email}
+                  {errors.email && (
+                    <div className="mt-2 bg-red-100 border border-red-200 text-sm text-red-800 rounded-lg p-4">
+                      <span className="font-bold">Cảnh báo</span>{" "}
+                      {errors.email}
                     </div>
                   )}
                 </div>
@@ -539,9 +504,8 @@ export default function Register() {
               </div>
               <div className="!mt-8">
                 <button
-                  type="button"
+                  type="submit"
                   className="w-full py-3 px-4 text-sm font-medium tracking-wider cursor-pointer rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl hover:shadow-inner focus:outline-none transition duration-500 ease-in-out transform hover:-translate-y-0.5 hover:scale-105"
-                  onClick={onSubmit}
                 >
                   Tạo tài khoản
                 </button>

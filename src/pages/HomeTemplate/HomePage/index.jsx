@@ -1,7 +1,14 @@
+import Banner from "./BannerPage";
+
+import MoviePagination from "./MoviePagination";
+import CinemaCorner from "./CinemaCorner";
+
 export default function HomePage() {
   return (
     <div>
-      <h1>HomePage</h1>
+      <Banner />
+      <MoviePagination />
+      <CinemaCorner />
     </div>
   );
 }

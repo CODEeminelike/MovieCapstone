@@ -5,8 +5,10 @@ import authReducer from "@/pages/AdminTemplate/AuthPage/slice";
 import addUserReducer from "@/pages/AdminTemplate/AddUserPage/slice";
 import authUserReducer from "@/pages/HomeTemplate/LoginPage/slice";
 import authUserRegisterReducer from "@/pages/HomeTemplate/RegisterPage/slice";
+import listBannerReducer from "@/pages/HomeTemplate/HomePage/BannerPage/slice";
+import moviesWithPaginationReducer from "@/pages/HomeTemplate/HomePage/MoviePagination/slice";
 
-//src\pages\HomeTemplate\ListMoviePage\slice.js
+//D:\Hard\Cyber\sbc_react\capstone\src\pages\HomeTemplate\HomePage\MoviePagination\slice.js
 export const store = configureStore({
   reducer: {
     listMovieReducer,
@@ -15,5 +17,7 @@ export const store = configureStore({
     addUserReducer,
     authUserReducer,
     authUserRegisterReducer,
+    listBannerReducer,
+    moviesWithPaginationReducer,
   },
 });

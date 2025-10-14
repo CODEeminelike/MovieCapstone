@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { API_CONFIG } from "../../../constants/constant";
+import { guestApi } from "../../../../services/apiService";
 
-import { guestApi } from "../../../services/apiService";
 const initialState = {
   loading: false,
   data: null,
@@ -13,7 +12,7 @@ export const fetchData = createAsyncThunk(
   async (__, { rejectWithValue }) => {
     try {
       const response = await guestApi.get(
-        "QuanLyPhim/LayDanhSachPhim?maNhom=GP01"
+        "QuanLyPhim/LayDanhSachBanner"
       );
 
       return response.data.content;
@@ -26,14 +25,14 @@ export const fetchData = createAsyncThunk(
   }
 );
 
-const listMovieReducer = createSlice({
-  name: "listMovieReducer",
+const listBannerReducer = createSlice({
+  name: "listBannerReducer",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchData.pending, (state) => {
       state.loading = true;
-      state.error = null; //race condition prevent
+      state.error = null;
     });
 
     builder.addCase(fetchData.fulfilled, (state, action) => {
@@ -48,5 +47,4 @@ const listMovieReducer = createSlice({
   },
 });
 
-export {};
-export default listMovieReducer.reducer;
+export default listBannerReducer.reducer;
