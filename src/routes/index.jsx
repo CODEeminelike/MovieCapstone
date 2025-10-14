@@ -5,7 +5,7 @@ import ListMoviePage from "../pages/HomeTemplate/ListMoviePage";
 import DetailPage from "../pages/HomeTemplate/DetailPage";
 import AdminTemplate from "../pages/AdminTemplate";
 import Dashboard from "../pages/AdminTemplate/Dashboard";
-import AddUserPage from "../pages/AdminTemplate/AddUserPage";
+import AddUserPage from "../pages/AdminTemplate/UserManage/addUser";
 import AuthPage from "../pages/AdminTemplate/AuthPage";
 import { Route } from "react-router-dom";
 import Login from "../pages/HomeTemplate/LoginPage";
@@ -16,6 +16,7 @@ import EditMovie from "../pages/AdminTemplate/MovieManage/editMovie";
 import AddMovie from "../pages/AdminTemplate/MovieManage/AddMovie";
 import DeleteMovie from "../pages/AdminTemplate/MovieManage/deleteMovie";
 import CreateShowtime from "../pages/AdminTemplate/MovieManage/createShowtime";
+import UserList from "../pages/AdminTemplate/UserManage/userList";
 
 export const routes = [
   {
@@ -52,12 +53,20 @@ export const routes = [
     nested: [
       { path: "dashboard", element: Dashboard, name: "DASHBOARD" },
       {
-        path: "add-user",
-        element: AddUserPage,
-        name: "THÊM NGƯỜI DÙNG",
+        path: "manage-user",
+        element: UserList,
+        name: "QUẢN LÍ NGƯỜI DÙNG",
+        nested: [
+          {
+            path: "add-user",
+            element: AddUserPage,
+            name: "THÊM NGƯỜI DÙNG",
+            hiddenNav: true,
+          },
+        ],
       },
       {
-        path: "movie-management",
+        path: "manage-movie",
         element: ShowMovies,
         name: "QUẢN LÍ PHIM",
       },
