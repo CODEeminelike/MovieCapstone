@@ -176,6 +176,9 @@ export default function DetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Lịch chiếu rạp */}
+        {/* <TheaterList movieId={movie.maPhim} /> */}
       </div>
     </div>
   );

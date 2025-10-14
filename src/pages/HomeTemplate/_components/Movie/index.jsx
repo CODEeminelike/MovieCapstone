@@ -105,10 +105,7 @@ export default function MovieCard(props) {
               </button>
 
               {/* Buy ticket button */}
-              <Link
-                to={`/detail/${movie.maPhim}`}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center space-x-2"
-              >
+              <button className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center space-x-2">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -117,7 +114,7 @@ export default function MovieCard(props) {
                   <path d="M4.5 22V2h15v20h-15zm3-13h9v2h-9V9zm0 4h9v2h-9v-2z" />
                 </svg>
                 <span>Mua vé</span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>

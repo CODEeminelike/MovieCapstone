@@ -7,8 +7,9 @@ import authUserReducer from "@/pages/HomeTemplate/LoginPage/slice";
 import authUserRegisterReducer from "@/pages/HomeTemplate/RegisterPage/slice";
 import listBannerReducer from "@/pages/HomeTemplate/HomePage/BannerPage/slice";
 import moviesWithPaginationReducer from "@/pages/HomeTemplate/HomePage/MoviePagination/slice";
+import theaterSlice from "@/pages/HomeTemplate/DetailPage/TheaterList/theaterSlice";
 
-//D:\Hard\Cyber\sbc_react\capstone\src\pages\HomeTemplate\HomePage\MoviePagination\slice.js
+//src\pages\HomeTemplate\DetailPage\TheaterList\slice.js
 export const store = configureStore({
   reducer: {
     listMovieReducer,
@@ -19,5 +20,6 @@ export const store = configureStore({
     authUserRegisterReducer,
     listBannerReducer,
     moviesWithPaginationReducer,
+    theaterSlice,
   },
 });

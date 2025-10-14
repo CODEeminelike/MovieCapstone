@@ -10,6 +10,7 @@ import AuthPage from "../pages/AdminTemplate/AuthPage";
 import { Route } from "react-router-dom";
 import Login from "../pages/HomeTemplate/LoginPage";
 import Register from "../pages/HomeTemplate/RegisterPage";
+import SeatSelection from "../pages/HomeTemplate/Booking/seatSelection";
 
 export const routes = [
   {
@@ -20,6 +21,11 @@ export const routes = [
       { path: "about", element: AboutPage, name: "GIỚI THIỆU" },
       { path: "list-movie", element: ListMoviePage, name: "PHIM" },
       { path: "detail/:id", element: DetailPage, hiddenNav: true }, // Không hiển thị trong nav
+      {
+        path: "booking/:maLichChieu",
+        element: SeatSelection,
+        hiddenNav: true,
+      },
       {
         path: "login",
         element: Login,
