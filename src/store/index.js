@@ -9,8 +9,10 @@ import listBannerReducer from "@/pages/HomeTemplate/HomePage/BannerPage/slice";
 import moviesWithPaginationReducer from "@/pages/HomeTemplate/HomePage/MoviePagination/slice";
 import theaterSlice from "@/pages/HomeTemplate/DetailPage/TheaterList/theaterSlice";
 import seatSlice from "@/pages/HomeTemplate/Booking/seatSlice";
+import movieManagementReducer from "@/pages/AdminTemplate/MovieManage/slice";
+import showtimeReducer from "@/pages/AdminTemplate/MovieManage/showtimeSlice";
 
-//src\pages\HomeTemplate\DetailPage\TheaterList\slice.js
+//src\pages\AdminTemplate\MovieManage
 export const store = configureStore({
   reducer: {
     listMovieReducer,
@@ -23,5 +25,7 @@ export const store = configureStore({
     moviesWithPaginationReducer,
     theaterSlice,
     seatSlice,
+    movieManagementReducer,
+    showtimeReducer,
   },
 });

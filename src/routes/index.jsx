@@ -11,6 +11,11 @@ import { Route } from "react-router-dom";
 import Login from "../pages/HomeTemplate/LoginPage";
 import Register from "../pages/HomeTemplate/RegisterPage";
 import SeatSelection from "../pages/HomeTemplate/Booking/seatSelection";
+import ShowMovies from "../pages/AdminTemplate/MovieManage/showMovies";
+import EditMovie from "../pages/AdminTemplate/MovieManage/editMovie";
+import AddMovie from "../pages/AdminTemplate/MovieManage/AddMovie";
+import DeleteMovie from "../pages/AdminTemplate/MovieManage/deleteMovie";
+import CreateShowtime from "../pages/AdminTemplate/MovieManage/createShowtime";
 
 export const routes = [
   {
@@ -51,8 +56,38 @@ export const routes = [
         element: AddUserPage,
         name: "THÊM NGƯỜI DÙNG",
       },
+      {
+        path: "movie-management",
+        element: ShowMovies,
+        name: "QUẢN LÍ PHIM",
+      },
+      {
+        path: "add-movie",
+        element: AddMovie,
+        name: "THÊM PHIM",
+        hiddenNav: true,
+      },
+      {
+        path: "edit-movie/:maPhim",
+        element: EditMovie,
+        name: "SỬA PHIM",
+        hiddenNav: true,
+      },
+      {
+        path: "delete-movie/:maPhim",
+        element: DeleteMovie,
+        name: "XÓA PHIM",
+        hiddenNav: true,
+      },
+      {
+        path: "create-showtime/:maPhim",
+        element: CreateShowtime,
+        name: "TẠO LỊCH CHIẾU",
+        hiddenNav: true,
+      },
     ],
   },
+
   {
     path: "auth",
     element: AuthPage,

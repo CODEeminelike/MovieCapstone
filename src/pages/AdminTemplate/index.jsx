@@ -8,9 +8,14 @@ export default function AdminTemplate() {
     return <Navigate to="/auth" />;
   }
   return (
-    <div>
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
       <Navbar />
-      <Outlet />
+
+      {/* Nội dung chính */}
+      <main className="flex-1 ml-64 bg-gray-100 p-6">
+        <Outlet />
+      </main>
     </div>
   );
 }
