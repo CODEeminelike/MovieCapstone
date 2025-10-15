@@ -1,7 +1,15 @@
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import { routes } from "../../../../routes";
+import { logout } from "../../../HomeTemplate/LoginPage/slice";
+import { useDispatch } from "react-redux";
+import { storage } from "../../../../helpers/localStorageHelper";
 
 export default function Navbar() {
+  const handleLogout = () => {
+    storage.remove("ADMIN_INFO");
+    storage.remove("USER_INFO");
+    window.location.href = "/auth";
+  };
   // Icon mapping configuration
   const iconConfig = {
     dashboard: (
@@ -161,9 +169,11 @@ export default function Navbar() {
 
       {/* Footer Section */}
       <div className="p-4 border-t border-gray-700">
-        <NavLink
-          to="/auth"
+        <button
           className="flex items-center p-3 rounded-lg text-base font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300"
+          onClick={() => {
+            handleLogout();
+          }}
         >
           <svg
             className="w-5 h-5 mr-3"
@@ -179,7 +189,7 @@ export default function Navbar() {
             />
           </svg>
           Đăng xuất
-        </NavLink>
+        </button>
       </div>
 
       {/* Mobile Toggle Button - Hidden on desktop */}
