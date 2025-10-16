@@ -6,7 +6,7 @@ const initialState = {
   loading: false,
   data: null,
   error: null,
-  selectedSeats: [], // Thêm state cho ghế đã chọn
+  selectedSeats: [], //  state cho ghế đã chọn
 };
 
 export const fetchRoomData = createAsyncThunk(
@@ -96,7 +96,6 @@ const seatSlice = createSlice({
         state.loading = false;
         // Reset selected seats after successful booking
         state.selectedSeats = [];
-        // Có thể cần cập nhật lại data nếu muốn
       })
       .addCase(bookTickets.rejected, (state, action) => {
         state.loading = false;

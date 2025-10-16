@@ -1,4 +1,3 @@
-// src\pages\HomeTemplate\ListMoviePage\index.jsx
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "./slice";

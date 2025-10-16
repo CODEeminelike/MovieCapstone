@@ -1,4 +1,3 @@
-// src/pages/AdminTemplate/UserManage/userSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { adminApi } from "../../../services/apiService";
 

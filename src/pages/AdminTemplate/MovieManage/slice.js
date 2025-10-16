@@ -1,4 +1,3 @@
-// slice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { adminApi } from "../../../services/apiService";
 

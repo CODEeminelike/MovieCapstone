@@ -47,7 +47,7 @@ export default function AlertError(props) {
               </svg>
             </div>
             <div className="text-xl font-normal max-w-full flex-initial">
-              {getErrorMessage()} {/* SỬ DỤNG HÀM XỬ LÝ */}
+              {getErrorMessage()}
             </div>
             <div className="flex flex-auto flex-row-reverse">
               <div></div>

@@ -32,7 +32,6 @@ export default function CinemaCorner() {
     },
   ];
 
-  // Hàm format index với dấu chấm thay vì dấu phẩy
   const formatIndex = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };

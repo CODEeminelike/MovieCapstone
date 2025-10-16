@@ -1,4 +1,3 @@
-// theaterSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { guestApi } from "@/services/apiService";
 

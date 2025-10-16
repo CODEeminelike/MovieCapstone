@@ -18,12 +18,11 @@ export default function MoviePagination() {
     dispatch(fetchMoviesWithPagination(currentPage));
   }, [dispatch, currentPage]);
 
-  // Debug data structure
   useEffect(() => {
     console.log("Movies data:", movies);
   }, [movies]);
 
-  // Tạo danh sách trang (giả sử có 3 trang)
+  // Tạo danh sách trang ( 3 trang)
   const totalPages = 3;
   const pageNumbers = Array.from(
     { length: totalPages },
